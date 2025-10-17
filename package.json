@@ -24,7 +24,11 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "faker": "^6.6.6",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^6.17.1"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

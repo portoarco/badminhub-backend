@@ -92,9 +92,103 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UsersScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  password: 'password',
+  phone: 'phone',
+  created_at: 'created_at'
+};
+
+exports.Prisma.VenuesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  address: 'address',
+  cp_phone: 'cp_phone',
+  price: 'price',
+  description: 'description',
+  banner: 'banner',
+  rating: 'rating',
+  reviewer: 'reviewer',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TimeSlotsScalarFieldEnum = {
+  id: 'id',
+  venues_id: 'venues_id',
+  start_time: 'start_time',
+  end_time: 'end_time',
+  isBooked: 'isBooked',
+  created_at: 'created_at'
+};
+
+exports.Prisma.BookingsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  total_price: 'total_price',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.BookingDetailsScalarFieldEnum = {
+  id: 'id',
+  venue_id: 'venue_id',
+  booking_id: 'booking_id',
+  slot_id: 'slot_id',
+  booking_date: 'booking_date'
+};
+
+exports.Prisma.PaymentsScalarFieldEnum = {
+  id: 'id',
+  booking_id: 'booking_id',
+  transaction_id: 'transaction_id',
+  payment_method: 'payment_method',
+  amount: 'amount',
+  payment_status: 'payment_status',
+  va_number: 'va_number',
+  pdf_url: 'pdf_url',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.BookingStatus = exports.$Enums.BookingStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+};
 
 exports.Prisma.ModelName = {
-
+  Users: 'Users',
+  Venues: 'Venues',
+  TimeSlots: 'TimeSlots',
+  Bookings: 'Bookings',
+  BookingDetails: 'BookingDetails',
+  Payments: 'Payments'
 };
 /**
  * Create the Client
@@ -125,7 +219,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
@@ -135,7 +229,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -144,13 +237,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n",
-  "inlineSchemaHash": "6f740d0a59833416b4b9e621946d74a7c31fc60705864efef4659411d76803eb",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum BookingStatus {\n  PENDING\n  CONFIRMED\n  CANCELLED\n}\n\nenum PaymentStatus {\n  PENDING\n  PAID\n  FAILED\n  EXPIRED\n  CANCELLED\n}\n\nmodel Users {\n  id         String     @id @default(uuid())\n  name       String\n  email      String     @unique\n  password   String\n  phone      String\n  created_at DateTime   @default(now())\n  bookings   Bookings[]\n}\n\nmodel Venues {\n  id              Int              @id @default(autoincrement())\n  name            String           @unique\n  city            String\n  address         String\n  cp_phone        String\n  price           Int\n  description     String\n  banner          String\n  rating          Float\n  reviewer        Int\n  created_at      DateTime         @default(now())\n  time_slots      TimeSlots[]\n  booking_details BookingDetails[]\n}\n\nmodel TimeSlots {\n  id              Int              @id @default(autoincrement())\n  venues_id       Int\n  start_time      DateTime\n  end_time        DateTime\n  isBooked        Boolean          @default(false)\n  created_at      DateTime         @default(now())\n  venue           Venues           @relation(fields: [venues_id], references: [id], onDelete: Cascade)\n  booking_details BookingDetails[]\n\n  @@unique([venues_id, start_time, end_time])\n}\n\nmodel Bookings {\n  id              String           @id @default(uuid())\n  user_id         String\n  total_price     Int\n  status          BookingStatus    @default(PENDING)\n  created_at      DateTime         @default(now())\n  updated_at      DateTime         @updatedAt\n  user            Users            @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  booking_details BookingDetails[]\n  payment         Payments?\n}\n\nmodel BookingDetails {\n  id           String    @id @default(uuid())\n  venue_id     Int\n  booking_id   String\n  slot_id      Int\n  booking_date DateTime\n  venue        Venues    @relation(fields: [venue_id], references: [id], onDelete: Cascade)\n  slot         TimeSlots @relation(fields: [slot_id], references: [id], onDelete: Cascade)\n  booking      Bookings  @relation(fields: [booking_id], references: [id], onDelete: Cascade)\n}\n\nmodel Payments {\n  id             String        @id @default(uuid())\n  booking_id     String        @unique\n  transaction_id String        @unique\n  payment_method String\n  amount         Int\n  payment_status PaymentStatus @default(PENDING)\n  va_number      String?\n  pdf_url        String\n  created_at     DateTime      @default(now())\n  updated_at     DateTime      @updatedAt\n  booking        Bookings      @relation(fields: [booking_id], references: [id], onDelete: Cascade)\n}\n",
+  "inlineSchemaHash": "b3861ec30951427037c38176ea52421965a43cbb4aa44041122ea0d314589269",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"bookings\",\"kind\":\"object\",\"type\":\"Bookings\",\"relationName\":\"BookingsToUsers\"}],\"dbName\":null},\"Venues\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cp_phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"banner\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"rating\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"reviewer\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"time_slots\",\"kind\":\"object\",\"type\":\"TimeSlots\",\"relationName\":\"TimeSlotsToVenues\"},{\"name\":\"booking_details\",\"kind\":\"object\",\"type\":\"BookingDetails\",\"relationName\":\"BookingDetailsToVenues\"}],\"dbName\":null},\"TimeSlots\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"venues_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"start_time\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"end_time\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"isBooked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"venue\",\"kind\":\"object\",\"type\":\"Venues\",\"relationName\":\"TimeSlotsToVenues\"},{\"name\":\"booking_details\",\"kind\":\"object\",\"type\":\"BookingDetails\",\"relationName\":\"BookingDetailsToTimeSlots\"}],\"dbName\":null},\"Bookings\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"total_price\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"BookingStatus\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"Users\",\"relationName\":\"BookingsToUsers\"},{\"name\":\"booking_details\",\"kind\":\"object\",\"type\":\"BookingDetails\",\"relationName\":\"BookingDetailsToBookings\"},{\"name\":\"payment\",\"kind\":\"object\",\"type\":\"Payments\",\"relationName\":\"BookingsToPayments\"}],\"dbName\":null},\"BookingDetails\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"venue_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"booking_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slot_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"booking_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"venue\",\"kind\":\"object\",\"type\":\"Venues\",\"relationName\":\"BookingDetailsToVenues\"},{\"name\":\"slot\",\"kind\":\"object\",\"type\":\"TimeSlots\",\"relationName\":\"BookingDetailsToTimeSlots\"},{\"name\":\"booking\",\"kind\":\"object\",\"type\":\"Bookings\",\"relationName\":\"BookingDetailsToBookings\"}],\"dbName\":null},\"Payments\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"booking_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"transaction_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payment_method\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"amount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"payment_status\",\"kind\":\"enum\",\"type\":\"PaymentStatus\"},{\"name\":\"va_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pdf_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"booking\",\"kind\":\"object\",\"type\":\"Bookings\",\"relationName\":\"BookingsToPayments\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

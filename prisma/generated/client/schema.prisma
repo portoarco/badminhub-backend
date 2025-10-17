@@ -10,7 +10,96 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  EXPIRED
+  CANCELLED
+}
+
+model Users {
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  password   String
+  phone      String
+  created_at DateTime   @default(now())
+  bookings   Bookings[]
+}
+
+model Venues {
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
+  city            String
+  address         String
+  cp_phone        String
+  price           Int
+  description     String
+  banner          String
+  rating          Float
+  reviewer        Int
+  created_at      DateTime         @default(now())
+  time_slots      TimeSlots[]
+  booking_details BookingDetails[]
+}
+
+model TimeSlots {
+  id              Int              @id @default(autoincrement())
+  venues_id       Int
+  start_time      DateTime
+  end_time        DateTime
+  isBooked        Boolean          @default(false)
+  created_at      DateTime         @default(now())
+  venue           Venues           @relation(fields: [venues_id], references: [id], onDelete: Cascade)
+  booking_details BookingDetails[]
+
+  @@unique([venues_id, start_time, end_time])
+}
+
+model Bookings {
+  id              String           @id @default(uuid())
+  user_id         String
+  total_price     Int
+  status          BookingStatus    @default(PENDING)
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  user            Users            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  booking_details BookingDetails[]
+  payment         Payments?
+}
+
+model BookingDetails {
+  id           String    @id @default(uuid())
+  venue_id     Int
+  booking_id   String
+  slot_id      Int
+  booking_date DateTime
+  venue        Venues    @relation(fields: [venue_id], references: [id], onDelete: Cascade)
+  slot         TimeSlots @relation(fields: [slot_id], references: [id], onDelete: Cascade)
+  booking      Bookings  @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+}
+
+model Payments {
+  id             String        @id @default(uuid())
+  booking_id     String        @unique
+  transaction_id String        @unique
+  payment_method String
+  amount         Int
+  payment_status PaymentStatus @default(PENDING)
+  va_number      String?
+  pdf_url        String
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+  booking        Bookings      @relation(fields: [booking_id], references: [id], onDelete: Cascade)
 }

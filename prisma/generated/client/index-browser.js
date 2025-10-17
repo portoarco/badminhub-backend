@@ -120,9 +120,103 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UsersScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  password: 'password',
+  phone: 'phone',
+  created_at: 'created_at'
+};
+
+exports.Prisma.VenuesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  address: 'address',
+  cp_phone: 'cp_phone',
+  price: 'price',
+  description: 'description',
+  banner: 'banner',
+  rating: 'rating',
+  reviewer: 'reviewer',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TimeSlotsScalarFieldEnum = {
+  id: 'id',
+  venues_id: 'venues_id',
+  start_time: 'start_time',
+  end_time: 'end_time',
+  isBooked: 'isBooked',
+  created_at: 'created_at'
+};
+
+exports.Prisma.BookingsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  total_price: 'total_price',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.BookingDetailsScalarFieldEnum = {
+  id: 'id',
+  venue_id: 'venue_id',
+  booking_id: 'booking_id',
+  slot_id: 'slot_id',
+  booking_date: 'booking_date'
+};
+
+exports.Prisma.PaymentsScalarFieldEnum = {
+  id: 'id',
+  booking_id: 'booking_id',
+  transaction_id: 'transaction_id',
+  payment_method: 'payment_method',
+  amount: 'amount',
+  payment_status: 'payment_status',
+  va_number: 'va_number',
+  pdf_url: 'pdf_url',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.BookingStatus = exports.$Enums.BookingStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED',
+  CANCELLED: 'CANCELLED'
+};
 
 exports.Prisma.ModelName = {
-
+  Users: 'Users',
+  Venues: 'Venues',
+  TimeSlots: 'TimeSlots',
+  Bookings: 'Bookings',
+  BookingDetails: 'BookingDetails',
+  Payments: 'Payments'
 };
 
 /**

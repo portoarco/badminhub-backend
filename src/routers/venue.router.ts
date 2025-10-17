@@ -3,6 +3,6 @@ import { getAllVenue } from "../controllers/venue.controller";
 
 const route = Router();
 
-route.get("/route", getAllVenue);
+route.get("/all", getAllVenue);
 
 export default route;
