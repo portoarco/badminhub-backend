@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express, { Application, Request, Response } from "express";
 import venueRouters from "./routers/venue.router";
+import transactionRouters from "./routers/transaction.router";
 import process from "process";
 import cors from "cors";
 
@@ -18,6 +19,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 // ROUTER
 app.use("/api/venue", venueRouters);
+app.use("/api/transaction", transactionRouters);
 
 app.listen(PORT, () => {
   console.log(`API is running at http://localhost:${PORT}`);
