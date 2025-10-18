@@ -35,7 +35,7 @@ model Users {
   password String
   phone String
   created_at DateTime @default(now())
-  bookings Bookings[]
+  // bookings Bookings[]
 }
 
 model Venues {
