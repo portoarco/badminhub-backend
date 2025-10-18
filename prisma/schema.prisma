@@ -4,8 +4,16 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -69,16 +77,15 @@ model TimeSlots {
 
 model Bookings {
   id String @id @default(uuid())
-  // user_id String
-  first_name String
-  last_name String
+  customer_first_name String
+  customer_last_name String
+  email String
+  phone String 
   order_id String
   gross_amount Int
-  total_price Int
   status BookingStatus @default(PENDING)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  // user Users @relation(fields: [user_id],references: [id], onDelete: Cascade)
   booking_details BookingDetails[]
   payment Payments? 
 }
@@ -98,11 +105,12 @@ model Payments{
   id String @id @default(uuid())
   booking_id String @unique
   order_id String @unique
-  gross_amount Int
+  transaction_id String
+  gross_amount String
   payment_method String
-  payment_status PaymentStatus @default(PENDING)
-  va_number String?
-  pdf_url String
+  // payment_status PaymentStatus @default(PENDING)
+  // va_number String?
+  // pdf_url String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   booking Bookings @relation(fields: [booking_id],references: [id],onDelete: Cascade)

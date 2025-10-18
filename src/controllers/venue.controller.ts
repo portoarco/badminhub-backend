@@ -26,7 +26,6 @@ export const getVenueDetails = async (req: Request, res: Response) => {
         time_slots: true,
       },
     });
-    console.log(venueDetails);
     res.status(200).send(venueDetails);
   } catch (error) {
     console.log(error);
@@ -81,7 +80,6 @@ export const removeSlotVenue = async (req: Request, res: Response) => {
     });
 
     const removeSlotsId = findSlotsId.map((slots) => slots.id);
-    console.log(removeSlotsId);
     // setelah ketemu, langsung deleteMany
     const removeSlotsfromDb = await prisma.timeSlots.deleteMany({
       where: { id: { in: removeSlotsId } },
