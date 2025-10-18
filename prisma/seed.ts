@@ -22,7 +22,8 @@ async function main() {
   console.log("Membuat 20 data user . . .");
   const users = await prisma.users.createManyAndReturn({
     data: Array.from({ length: 20 }, () => ({
-      name: faker.person.fullName(),
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
       email: faker.internet.email().toLowerCase(),
       password: faker.internet.password(),
       phone: faker.phone.number(),

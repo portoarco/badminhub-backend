@@ -36,7 +36,6 @@ export const getVenueDetails = async (req: Request, res: Response) => {
 
 export const keepSlotVenue = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const keepSlotData = req.body;
 
     const slotsToKeep = keepSlotData.map((slot: any) => ({
@@ -45,6 +44,16 @@ export const keepSlotVenue = async (req: Request, res: Response) => {
       end_time: slot.end_time,
       isBooked: true,
     }));
+
+    const findSlotsId = await prisma.timeSlots.findMany({
+      where: {
+        venues_id: slotsToKeep.venues_id,
+        start_time: slotsToKeep.start_time,
+        end_time: slotsToKeep.end_time,
+      },
+    });
+
+    if (findSlotsId) return console.log("Kamu sudah punya booking slot");
 
     const data = await prisma.timeSlots.createMany({
       data: slotsToKeep,
@@ -58,22 +67,31 @@ export const keepSlotVenue = async (req: Request, res: Response) => {
 
 export const removeSlotVenue = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
-    const keepSlotData = req.body;
-
-    const slotsToKeep = keepSlotData.map((slot: any) => ({
+    const removeSlot = req.body;
+    const slotsToRemove = removeSlot.map((slot: any) => ({
       venues_id: slot.venueId,
       start_time: slot.start_time,
       end_time: slot.end_time,
-      isBooked: true,
     }));
 
-    const data = await prisma.timeSlots.createMany({
-      data: slotsToKeep,
+    // cari dulu time_slots_id sesuai dengan slotsToRemove
+    const findSlotsId = await prisma.timeSlots.findMany({
+      where: {
+        venues_id: slotsToRemove.venues_id,
+        start_time: slotsToRemove.start_time,
+        end_time: slotsToRemove.end_time,
+      },
     });
-    res.status(200).send("Keep Slot Success");
+
+    const removeSlotsId = findSlotsId.map((slots) => slots.id);
+    console.log(removeSlotsId);
+    // setelah ketemu, langsung deleteMany
+    const removeSlotsfromDb = await prisma.timeSlots.deleteMany({
+      where: { id: { in: removeSlotsId } },
+    });
+    res.status(200).send("Remove Slot Success");
   } catch (error) {
     console.log(error);
-    res.status(500).send("Keep Slot Error");
+    res.status(500).send("Remove Slot Error");
   }
 };

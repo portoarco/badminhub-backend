@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { prisma } from "../config/prisma";
 
-export const postNewTransaction = async (req: Request, res: Response) => {
+export const postCalculateTrx = async (req: Request, res: Response) => {
   try {
     const bookingData = req.body;
     const priceVenueArray = bookingData.map((price: any) => price.venuePrice);
@@ -25,5 +24,12 @@ export const postNewTransaction = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     res.status(500).send("Get All Trx Error");
+  }
+};
+export const postNewPayment = async (req: Request, res: Response) => {
+  try {
+    console.log();
+  } catch (error) {
+    console.log(error);
   }
 };
