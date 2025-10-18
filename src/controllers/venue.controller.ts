@@ -52,9 +52,6 @@ export const keepSlotVenue = async (req: Request, res: Response) => {
         end_time: slotsToKeep.end_time,
       },
     });
-
-    if (findSlotsId) return console.log("Kamu sudah punya booking slot");
-
     const data = await prisma.timeSlots.createMany({
       data: slotsToKeep,
     });
