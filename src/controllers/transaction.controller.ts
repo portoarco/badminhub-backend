@@ -59,8 +59,6 @@ export const createTransaction = async (req: Request, res: Response) => {
     const token = transaction.token;
     const redirect_url = transaction.redirect_url;
 
-    // saat transaksi berhasil, maka bookings langsung terisi dulu
-
     res
       .status(200)
       .json({ message: "Transaction Success", token, redirect_url });
@@ -99,13 +97,15 @@ export const createBookingandPayment = async (req: Request, res: Response) => {
       },
     });
     // create booking details
+    const bookingDetailsData = slot_id.map((slotId: number, index: number) => ({
+      venue_id: venue_id[index],
+      slot_id: slot_id,
+      booking_date: new Date(paymentData.booking_date),
+      booking_id: bookings.id,
+    }));
+
     const bookingDetails = await prisma.bookingDetails.createMany({
-      data: {
-        venue_id,
-        slot_id,
-        booking_date: paymentData.booking_date,
-        booking_id: bookings.id,
-      },
+      data: bookingDetailsData,
     });
     // create payment
     const payment = await prisma.payments.create({

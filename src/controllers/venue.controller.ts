@@ -64,26 +64,15 @@ export const keepSlotVenue = async (req: Request, res: Response) => {
 export const removeSlotVenue = async (req: Request, res: Response) => {
   try {
     const removeSlot = req.body;
-    const slotsToRemove = removeSlot.map((slot: any) => ({
+    const conditions = removeSlot.map((slot: any) => ({
       venues_id: slot.venueId,
       start_time: slot.start_time,
       end_time: slot.end_time,
     }));
-
-    // cari dulu time_slots_id sesuai dengan slotsToRemove
-    const findSlotsId = await prisma.timeSlots.findMany({
-      where: {
-        venues_id: slotsToRemove.venues_id,
-        start_time: slotsToRemove.start_time,
-        end_time: slotsToRemove.end_time,
-      },
+    const removeSlotsFromDb = await prisma.timeSlots.deleteMany({
+      where: { OR: conditions },
     });
 
-    const removeSlotsId = findSlotsId.map((slots) => slots.id);
-    // setelah ketemu, langsung deleteMany
-    const removeSlotsfromDb = await prisma.timeSlots.deleteMany({
-      where: { id: { in: removeSlotsId } },
-    });
     res.status(200).send("Remove Slot Success");
   } catch (error) {
     console.log(error);
