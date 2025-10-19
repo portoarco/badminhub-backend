@@ -120,9 +120,93 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UsersScalarFieldEnum = {
+  id: 'id',
+  first_name: 'first_name',
+  last_name: 'last_name',
+  email: 'email',
+  password: 'password',
+  phone: 'phone',
+  created_at: 'created_at'
+};
+
+exports.Prisma.VenuesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  address: 'address',
+  cp_phone: 'cp_phone',
+  price: 'price',
+  description: 'description',
+  banner: 'banner',
+  rating: 'rating',
+  reviewer: 'reviewer',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TimeSlotsScalarFieldEnum = {
+  id: 'id',
+  venues_id: 'venues_id',
+  start_time: 'start_time',
+  end_time: 'end_time',
+  isBooked: 'isBooked',
+  created_at: 'created_at'
+};
+
+exports.Prisma.BookingsScalarFieldEnum = {
+  id: 'id',
+  customer_first_name: 'customer_first_name',
+  customer_last_name: 'customer_last_name',
+  email: 'email',
+  phone: 'phone',
+  order_id: 'order_id',
+  gross_amount: 'gross_amount',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.BookingDetailsScalarFieldEnum = {
+  id: 'id',
+  venue_id: 'venue_id',
+  booking_id: 'booking_id',
+  slot_id: 'slot_id',
+  booking_date: 'booking_date'
+};
+
+exports.Prisma.PaymentsScalarFieldEnum = {
+  id: 'id',
+  booking_id: 'booking_id',
+  order_id: 'order_id',
+  transaction_id: 'transaction_id',
+  gross_amount: 'gross_amount',
+  payment_method: 'payment_method',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+exports.BookingStatus = exports.$Enums.BookingStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED'
+};
 
 exports.Prisma.ModelName = {
-
+  Users: 'Users',
+  Venues: 'Venues',
+  TimeSlots: 'TimeSlots',
+  Bookings: 'Bookings',
+  BookingDetails: 'BookingDetails',
+  Payments: 'Payments'
 };
 
 /**

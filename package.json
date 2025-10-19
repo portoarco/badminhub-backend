@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.ts"
+    "build": "tsc && cp -rv public dist/public",
+    "dev": "nodemon src/index.ts",
+    "postinstall": "prisma generate"
   },
   "author": "arco",
   "license": "ISC",
@@ -13,18 +15,28 @@
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/faker": "^6.6.8",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^24.7.2",
+    "@types/midtrans-client": "^1.4.0",
+    "@types/node": "^24.8.1",
+    "@types/typescript": "^2.0.0",
+    "prisma": "^6.17.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.1.0",
     "@prisma/client": "^6.17.1",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "faker": "^6.6.6",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.17.1"
+    "midtrans-client": "^1.4.3",
+    "uuid": "^13.0.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
